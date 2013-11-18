@@ -66,7 +66,7 @@ public class GamePanel {
             g.fillRect(0, 0, width, height);
             
             // Draw to buffer
-            //background.draw(g);
+            background.draw(g);
             obstaclePlane.draw(g);
             
         } finally {

@@ -1,9 +1,7 @@
 
 package sp;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -25,12 +23,12 @@ public class ObstaclePlane {
     private final int y = 300;
     private final int WIDTH = 600;
     private final int HEIGHT = 128;
-    private final int SPEED = 2;
-    private final int MAX_OBSTACLES = 12;
+    private final float SPEED = 1.25f;
+    private final int MAX_OBSTACLES = 6;
     private final int OBSTACLE_MIN_START_X = 400;
     
-    private final ArrayList<Point> obstacles = new ArrayList<>();
-    private double lastObstacleX = 0;
+    private final ArrayList<Obstacle> obstacles = new ArrayList<>();
+    private float lastObstacleX = 0;
     private final Random rand = new Random();
     
     protected ObstaclePlane() {
@@ -54,12 +52,12 @@ public class ObstaclePlane {
             
             // Create horizontal plane
             for (int crate = 0; crate <= largestX; crate += crateWidth) {
-                obstacles.add(new Point(crate, y));
+                obstacles.add(new Obstacle(crate, y));
             }
             
             // Create obstacles
             
-            int newObstacles = 4;//rand.nextInt(MAX_OBSTACLES / 2) + (MAX_OBSTACLES / 2) + 1;// Always 1/2 of max obs
+            int newObstacles = rand.nextInt(MAX_OBSTACLES / 2) + (MAX_OBSTACLES / 2) + 1;// Always 1/2 of max obs
             for (int crate = 0; crate < newObstacles; crate++) {
                 
                 // Reset
@@ -74,30 +72,27 @@ public class ObstaclePlane {
                 yPos += (rand.nextInt(10) < 7) ? (2 * crateWidth) : 0;
                 lastObstacleX = xPos;
                 
-                obstacles.add(new Point(xPos, yPos));
+                obstacles.add(new Obstacle(xPos, yPos));
             }
             
             return;
         }
-        double l = lastObstacleX;
+        
         lastObstacleX -= SPEED;
-        System.out.println("1) " + (l - lastObstacleX));
-        for (Point obstacle : obstacles) {
+        for (Obstacle obstacle : obstacles) {
             
-            double i = obstacle.getX();
-            double newXPos = obstacle.getX() - SPEED;
-            double newYPos = obstacle.getY();
+            float newXPos = obstacle.getX() - SPEED;
+            float newYPos = obstacle.getY();
             
-            System.out.println("2) " + (i - newXPos));
-            
-            if (newXPos + crateWidth < 100) {
+            if (newXPos + crateWidth < 0) {// Outside screen
                 
                 if (newYPos == y) {// Horizontal plane
                     newXPos += largestX;
                     
                 } else {// Obstacles
-                    newXPos = (lastObstacleX < 600) ? 600 : lastObstacleX;
-                    newXPos += (rand.nextInt(3) + 3) * crateWidth;
+                    newXPos = (lastObstacleX < WIDTH) ? WIDTH : lastObstacleX;
+                    newXPos += crateWidth * 3;
+                    newXPos += (rand.nextInt(2) + 2) * crateWidth;
                     
                     newYPos = y;
                     newYPos -= 3 * crateWidth;
@@ -112,20 +107,11 @@ public class ObstaclePlane {
     
     protected void draw(final Graphics g) {
         
-        for (Point obstacle : obstacles) {
-            /*if (obstacle.getY() != y) {
-                g.setColor(Color.GREEN);
-                g.drawLine((int)obstacle.getX(), 0, (int)obstacle.getX(), 400);
-            }*/
-            g.drawImage(crateImage, (int)obstacle.getX(), (int)obstacle.getY(), crateImage.getWidth() / 6, crateImage.getHeight() / 6, null);
-        }
+        final int size = crateImage.getWidth() / 6;// Height = Width
         
-        g.setColor(Color.RED);
-        g.drawLine(100, 0, 100, 400);
-        g.drawLine(600, 0, 600, 400);
-        g.setColor(Color.YELLOW);
-        g.drawString("Var", (int)lastObstacleX + 8, 95);
-        g.fillOval((int) lastObstacleX - 2, 100, 4, 4);
+        for (Obstacle obstacle : obstacles) {
+            g.drawImage(crateImage, obstacle.getX_int(), obstacle.getY_int(), size, size, null);
+        }
     }
     
     protected boolean isCollidingObstacle() {

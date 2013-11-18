@@ -26,11 +26,11 @@ public class EntryPoint {
         window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setTitle("SP");
-        window.setSize(1400, 359);
-        window.setResizable(true);
+        window.setSize(600, 359);
+        window.setResizable(false);
         window.setLocationRelativeTo(null);
         
-        final GamePanel gamePanel = new GamePanel(this, 1400, 359);
+        final GamePanel gamePanel = new GamePanel(this, 600, 359);
         
         window.setVisible(true);
         window.createBufferStrategy(2);

@@ -16,7 +16,7 @@ public class GameThread implements Runnable {
     private final GamePanel gamePanel;
     private final Thread thread;
     
-    private final int MAX_FPS = 60;
+    private final int MAX_FPS = 120;
     private final int MAX_FRAME_SKIPS = 5;
     private final int FRAME_PERIOD = 1000 / MAX_FPS;
     
