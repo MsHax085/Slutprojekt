@@ -51,6 +51,7 @@ public class GamePanel {
         //System.out.println("FPS: " + fps + ", UPS: " + ups);
         background.update();
         obstaclePlane.update();
+        character.update();
     }
     
     protected void draw() {
@@ -68,6 +69,7 @@ public class GamePanel {
             // Draw to buffer
             background.draw(g);
             obstaclePlane.draw(g);
+            character.draw(g);
             
         } finally {
             if (g != null) {

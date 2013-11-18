@@ -22,10 +22,8 @@ public class ObstaclePlane {
     private BufferedImage crateImage;
     private final int y = 300;
     private final int WIDTH = 600;
-    private final int HEIGHT = 128;
     private final float SPEED = 1.25f;
     private final int MAX_OBSTACLES = 6;
-    private final int OBSTACLE_MIN_START_X = 400;
     
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
     private float lastObstacleX = 0;
@@ -45,24 +43,25 @@ public class ObstaclePlane {
 
     protected void update() {
         
-        int crateWidth = crateImage.getWidth() / 6;
-        int largestX = (int) (Math.ceil((double) WIDTH / (double)crateWidth) + 1) * crateWidth;
+        final int crateWidth = crateImage.getWidth() / 6;
+        final double lastPlaneObstacleX = (Math.ceil((double) WIDTH / (double)crateWidth) + 1) * crateWidth;
         
         if (obstacles.isEmpty()) {
             
             // Create horizontal plane
-            for (int crate = 0; crate <= largestX; crate += crateWidth) {
+            for (int crate = 0; crate <= lastPlaneObstacleX; crate += crateWidth) {
                 obstacles.add(new Obstacle(crate, y));
             }
             
             // Create obstacles
+            final int halfMaxObstacles = MAX_OBSTACLES / 2;
+            final int newObstacles = rand.nextInt(halfMaxObstacles) + (halfMaxObstacles) + 1;// 1/2 of max obstacles to max obstacles
             
-            int newObstacles = rand.nextInt(MAX_OBSTACLES / 2) + (MAX_OBSTACLES / 2) + 1;// Always 1/2 of max obs
             for (int crate = 0; crate < newObstacles; crate++) {
                 
                 // Reset
-                int xPos = (int)lastObstacleX;
-                int yPos = y;
+                float xPos = lastObstacleX;
+                float yPos = y;
                 
                 xPos += (lastObstacleX < WIDTH) ? (WIDTH - lastObstacleX) : 0;
                 xPos += crateWidth * 3;
@@ -70,8 +69,8 @@ public class ObstaclePlane {
                 
                 yPos -= 3 * crateWidth;
                 yPos += (rand.nextInt(10) < 7) ? (2 * crateWidth) : 0;
-                lastObstacleX = xPos;
                 
+                lastObstacleX = xPos;
                 obstacles.add(new Obstacle(xPos, yPos));
             }
             
@@ -81,13 +80,14 @@ public class ObstaclePlane {
         lastObstacleX -= SPEED;
         for (Obstacle obstacle : obstacles) {
             
+            // Update all obstacle positions
             float newXPos = obstacle.getX() - SPEED;
             float newYPos = obstacle.getY();
             
             if (newXPos + crateWidth < 0) {// Outside screen
                 
                 if (newYPos == y) {// Horizontal plane
-                    newXPos += largestX;
+                    newXPos += lastPlaneObstacleX;
                     
                 } else {// Obstacles
                     newXPos = (lastObstacleX < WIDTH) ? WIDTH : lastObstacleX;
@@ -107,7 +107,7 @@ public class ObstaclePlane {
     
     protected void draw(final Graphics g) {
         
-        final int size = crateImage.getWidth() / 6;// Height = Width
+        final int size = crateImage.getWidth() / 6;// Height == Width
         
         for (Obstacle obstacle : obstacles) {
             g.drawImage(crateImage, obstacle.getX_int(), obstacle.getY_int(), size, size, null);
