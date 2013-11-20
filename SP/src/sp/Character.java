@@ -17,19 +17,23 @@ import javax.imageio.ImageIO;
  */
 public class Character {
 
-    private final GamePanel gamePanel;
+    private final EventListener eventListener;
     
     private final int x = 300;
     private float y = 290;
     private final int WIDTH = 68;
     private final int HEIGHT = 93;
     
+    private float ySpeed = 0;
+    private final float GRAVITY = 0.08f;
+    private final float JUMP_IMPULSE = -5;
+    
     private BufferedImage[] sprites;
     private int spriteIndex = 1;
     private long lastSpriteChange = 0;
     
-    protected Character(final GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
+    protected Character(final EventListener eventListener) {
+        this.eventListener = eventListener;
         
         try {
             // Load Character Sprites
@@ -60,7 +64,22 @@ public class Character {
     
     protected void update() {
         
-        if (System.currentTimeMillis() - lastSpriteChange > 80) {
+        float yForce = 0;
+        
+        yForce += GRAVITY;
+        if (y == 290 && eventListener.isSpacePressed()) {// y == 290 <=> NOT jumping
+            yForce += JUMP_IMPULSE;
+        }
+        
+        ySpeed += yForce;
+        y += ySpeed;
+        
+        if (y > 290) {// Horizontal plane
+            y = 290;
+            ySpeed = 0;
+        }
+        
+        if (System.currentTimeMillis() - lastSpriteChange > 50) {
             spriteIndex++;
             if (spriteIndex > 3) {
                 spriteIndex = 1;

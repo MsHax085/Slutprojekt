@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 public class EntryPoint {
     
     private final JFrame window;
+    private final EventListener eventListener;
 
     public static void main(final String[] args) {
         final EntryPoint entryPoint = new EntryPoint();
@@ -30,8 +31,11 @@ public class EntryPoint {
         window.setResizable(false);
         window.setLocationRelativeTo(null);
         
-        final GamePanel gamePanel = new GamePanel(this, 1000, 359);// def.width = 600
+        eventListener = new EventListener();
+        final GamePanel gamePanel = new GamePanel(this, eventListener, 1000, 359);// def.width = 600
         
+        window.addKeyListener(eventListener);
+        window.requestFocus();
         window.setVisible(true);
         window.createBufferStrategy(2);
         gamePanel.start();

@@ -14,15 +14,9 @@ import java.awt.event.MouseListener;
  */
 public class EventListener implements MouseListener, KeyListener {
     
-    private final GamePanel gamePanel;
-    
     private boolean SPACE_PRESSED = false;
     private int clickedX;
     private int clickedY;
-    
-    protected EventListener(final GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
-    }
     
     // Event functions ---------------------------------------------------------
 
@@ -37,7 +31,7 @@ public class EventListener implements MouseListener, KeyListener {
         
         final int keyCode = event.getKeyCode();
         
-        if (keyCode == KeyEvent.VK_BACK_SPACE) {
+        if (keyCode == KeyEvent.VK_SPACE) {
             SPACE_PRESSED = true;
         }
     }
@@ -47,7 +41,7 @@ public class EventListener implements MouseListener, KeyListener {
         
         final int keyCode = event.getKeyCode();
         
-        if (keyCode == KeyEvent.VK_BACK_SPACE) {
+        if (keyCode == KeyEvent.VK_SPACE) {
             SPACE_PRESSED = false;
         }
     }

@@ -14,7 +14,6 @@ import java.awt.image.BufferStrategy;
 public class GamePanel {
 
     private final EntryPoint entryPoint;
-    private final EventListener eventListener;
     private final Background background;
     private final GameUI gameUI;
     private final Character character;
@@ -29,15 +28,14 @@ public class GamePanel {
     private final int width;
     private final int height;
     
-    protected GamePanel(final EntryPoint entryPoint, final int width, final int height) {
+    protected GamePanel(final EntryPoint entryPoint, final EventListener eventListener, final int width, final int height) {
         
         this.width = width;
         this.height = height;
         this.entryPoint = entryPoint;
-        this.eventListener = new EventListener(this);
         this.background = new Background(width);
         this.gameUI = new GameUI();
-        this.character = new Character(this);
+        this.character = new Character(eventListener);
         this.obstaclePlane = new ObstaclePlane();
         this.pauseMenu = new PauseMenu();
         

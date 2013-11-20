@@ -23,7 +23,7 @@ public class ObstaclePlane {
     private BufferedImage obstacleImage;
     private final int y = 290;
     private final int WIDTH = 1000;// def.width = 600
-    private final float SPEED = 1.25f;
+    private final float SPEED = 1.85f;
     private final int MAX_OBSTACLES = 6;
     
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
