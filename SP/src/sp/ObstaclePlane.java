@@ -33,7 +33,7 @@ public class ObstaclePlane {
         
         try {
             
-            final File obstacleImageFile = new File("src/sp/resources/crate.jpg");
+            final File obstacleImageFile = new File("src/sp/resources/crate.png");
             crateImage = ImageIO.read(obstacleImageFile);
             
         } catch (IOException ex) {
@@ -43,7 +43,7 @@ public class ObstaclePlane {
 
     protected void update() {
         
-        final int crateWidth = crateImage.getWidth() / 6;
+        final int crateWidth = crateImage.getWidth();
         final double lastPlaneObstacleX = (Math.ceil((double) WIDTH / (double)crateWidth) + 1) * crateWidth;
         
         if (obstacles.isEmpty()) {
@@ -107,7 +107,7 @@ public class ObstaclePlane {
     
     protected void draw(final Graphics g) {
         
-        final int size = crateImage.getWidth() / 6;// Height == Width
+        final int size = crateImage.getWidth();// Height == Width
         
         for (Obstacle obstacle : obstacles) {
             g.drawImage(crateImage, obstacle.getX_int(), obstacle.getY_int(), size, size, null);
