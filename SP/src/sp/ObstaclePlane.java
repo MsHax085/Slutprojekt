@@ -19,9 +19,10 @@ import javax.imageio.ImageIO;
  */
 public class ObstaclePlane {
 
-    private BufferedImage crateImage;
-    private final int y = 300;
-    private final int WIDTH = 600;
+    private BufferedImage planeImage;
+    private BufferedImage obstacleImage;
+    private final int y = 290;
+    private final int WIDTH = 1000;// def.width = 600
     private final float SPEED = 1.25f;
     private final int MAX_OBSTACLES = 6;
     
@@ -33,8 +34,11 @@ public class ObstaclePlane {
         
         try {
             
+            final File planeImageFile = new File("src/sp/resources/plane.png");
             final File obstacleImageFile = new File("src/sp/resources/crate.png");
-            crateImage = ImageIO.read(obstacleImageFile);
+            
+            planeImage = ImageIO.read(planeImageFile);
+            obstacleImage = ImageIO.read(obstacleImageFile);
             
         } catch (IOException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
@@ -43,7 +47,7 @@ public class ObstaclePlane {
 
     protected void update() {
         
-        final int crateWidth = crateImage.getWidth();
+        final int crateWidth = planeImage.getWidth();
         final double lastPlaneObstacleX = (Math.ceil((double) WIDTH / (double)crateWidth) + 1) * crateWidth;
         
         if (obstacles.isEmpty()) {
@@ -107,10 +111,18 @@ public class ObstaclePlane {
     
     protected void draw(final Graphics g) {
         
-        final int size = crateImage.getWidth();// Height == Width
+        final int crateSize = planeImage.getWidth();// Height == Width
         
         for (Obstacle obstacle : obstacles) {
-            g.drawImage(crateImage, obstacle.getX_int(), obstacle.getY_int(), size, size, null);
+            
+            final int obstacleX = obstacle.getX_int();
+            final int obstacleY = obstacle.getY_int();
+            
+            if (obstacleY == y) {
+                g.drawImage(planeImage, obstacleX, obstacleY, crateSize, crateSize, null);
+            } else {
+                g.drawImage(obstacleImage, obstacleX, obstacleY, crateSize, crateSize, null);
+            }
         }
     }
     

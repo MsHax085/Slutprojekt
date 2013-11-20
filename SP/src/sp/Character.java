@@ -1,7 +1,6 @@
 
 package sp;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,13 +19,14 @@ public class Character {
 
     private final GamePanel gamePanel;
     
-    private final int x = 100;
-    private float y = 300;
-    private final int WIDTH = 50;
-    private final int HEIGHT = 51;
+    private final int x = 300;
+    private float y = 290;
+    private final int WIDTH = 68;
+    private final int HEIGHT = 93;
     
     private BufferedImage[] sprites;
-    private int spriteIndex = 0;
+    private int spriteIndex = 1;
+    private long lastSpriteChange = 0;
     
     protected Character(final GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -60,12 +60,19 @@ public class Character {
     
     protected void update() {
         
+        if (System.currentTimeMillis() - lastSpriteChange > 80) {
+            spriteIndex++;
+            if (spriteIndex > 3) {
+                spriteIndex = 1;
+            }
+            lastSpriteChange = System.currentTimeMillis();
+        }
     }
     
     protected void draw(final Graphics g) {
         
-        g.drawImage(sprites[spriteIndex], x - (WIDTH / 2), (int) (y - HEIGHT), null);
-        g.setColor(Color.red);
-        g.fillOval(x, (int)y, 2,2);
+        g.drawImage(sprites[spriteIndex], x - (WIDTH / 2), (int) (y - HEIGHT) + 1, null);
+        //g.setColor(Color.red);
+        //g.fillOval(x, (int)y, 2,2);
     }
 }

@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
  */
 public class Background {
 
+    private final int gamePanelWidth;
     private BufferedImage background;
     
     private final float BACKGROUND_SPEED = 0.35f;
@@ -24,8 +25,9 @@ public class Background {
     private float backgroundX = 0;
     private final int backgroundY = 0;
     
-    protected Background() {
+    protected Background(final int width) {
         
+        this.gamePanelWidth = width;
         try {
             
             final File backgroundFile = new File("src/sp/resources/background.jpg");
@@ -45,7 +47,11 @@ public class Background {
     }
     
     protected void draw(final Graphics g) {
-        g.drawImage(background, (int)backgroundX, backgroundY, null);
-        g.drawImage(background, (int)backgroundX + background.getWidth(), backgroundY, null);
+        
+        final int backgroundWidth = background.getWidth();
+        
+        for (int x = 0; x < Math.ceil((double) gamePanelWidth / (double) backgroundWidth) + 1; x++) {// + 1 - scrolling background
+            g.drawImage(background, (int)backgroundX + (x * backgroundWidth), backgroundY, null);
+        }
     }
 }

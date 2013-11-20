@@ -35,7 +35,7 @@ public class GamePanel {
         this.height = height;
         this.entryPoint = entryPoint;
         this.eventListener = new EventListener(this);
-        this.background = new Background();
+        this.background = new Background(width);
         this.gameUI = new GameUI();
         this.character = new Character(this);
         this.obstaclePlane = new ObstaclePlane();
