@@ -126,7 +126,27 @@ public class ObstaclePlane {
         }
     }
     
-    protected boolean isCollidingObstacle() {
+    protected boolean isCollidingObstacle(final int x1, final int y1, final int width, final int height) {
+        
+        final int x2 = x1 + width;
+        final int y2 = y1 + height;
+        final int obstacleSize = planeImage.getWidth();
+        
+        for (Obstacle obstacle : obstacles) {
+            
+            final int obstacleY1 = obstacle.getY_int();
+            
+            if (obstacleY1 != y) {
+                final int obstacleX1 = obstacle.getX_int();
+                final int obstacleX2 = obstacle.getX_int() + obstacleSize;
+                final int obstacleY2 = obstacle.getY_int() + obstacleSize;
+                
+                if (obstacleX1 >= x1 && obstacleX2 <= x1) {
+                    
+                }
+            }
+        }
+        
         return false;
     }
     
