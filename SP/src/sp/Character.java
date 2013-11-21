@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
  */
 public class Character {
 
+    private final GamePanel gamePanel;
     private final EventListener eventListener;
     
     private final int x = 300;
@@ -25,14 +26,15 @@ public class Character {
     private final int HEIGHT = 93;
     
     private float ySpeed = 0;
-    private final float GRAVITY = 0.08f;
-    private final float JUMP_IMPULSE = -5;
+    private final float GRAVITY = 0.42f;
+    private final float JUMP_IMPULSE = -9.6f;
     
     private BufferedImage[] sprites;
     private int spriteIndex = 1;
     private long lastSpriteChange = 0;
     
-    protected Character(final EventListener eventListener) {
+    protected Character(final GamePanel gamePanel, final EventListener eventListener) {
+        this.gamePanel = gamePanel;
         this.eventListener = eventListener;
         
         try {
@@ -77,6 +79,10 @@ public class Character {
         if (y > 290) {// Horizontal plane
             y = 290;
             ySpeed = 0;
+        }
+        
+        if (gamePanel.getObstactlePlane().isCollidingObstacle(x, (int) y, WIDTH, HEIGHT)) {
+            
         }
         
         if (System.currentTimeMillis() - lastSpriteChange > 50) {

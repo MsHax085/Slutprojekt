@@ -23,7 +23,7 @@ public class ObstaclePlane {
     private BufferedImage obstacleImage;
     private final int y = 290;
     private final int WIDTH = 1000;// def.width = 600
-    private final float SPEED = 1.85f;
+    private final float SPEED = 5.25f;
     private final int MAX_OBSTACLES = 6;
     
     private final ArrayList<Obstacle> obstacles = new ArrayList<>();
@@ -126,10 +126,10 @@ public class ObstaclePlane {
         }
     }
     
-    protected boolean isCollidingObstacle(final int x1, final int y1, final int width, final int height) {
+    protected boolean isCollidingObstacle(final int playerX1, final int playerY1, final int width, final int height) {
         
-        final int x2 = x1 + width;
-        final int y2 = y1 + height;
+        final int playerX2 = playerX1 + width;
+        final int playerY2 = playerY1 + height;
         final int obstacleSize = planeImage.getWidth();
         
         for (Obstacle obstacle : obstacles) {
@@ -141,7 +141,13 @@ public class ObstaclePlane {
                 final int obstacleX2 = obstacle.getX_int() + obstacleSize;
                 final int obstacleY2 = obstacle.getY_int() + obstacleSize;
                 
-                if (obstacleX1 >= x1 && obstacleX2 <= x1) {
+                if (playerY1 >= obstacleY1 && playerY1 <= obstacleY2 ||
+                    playerY2 >= obstacleY1 && playerY2 <= obstacleY2) {
+                    
+                    if (playerX1 >= obstacleX1 && playerX1 <= obstacleX2 ||
+                        playerX2 >= obstacleX1 && playerX2 <= obstacleX2) {
+                        System.out.println("Colliding");
+                    }
                     
                 }
             }
