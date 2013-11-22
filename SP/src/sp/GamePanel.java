@@ -22,7 +22,7 @@ public class GamePanel {
     private final GameThread gameThread;
     
     private boolean EXIT_REQUESTED = false;
-    private boolean PAUSE_REQUESTED = false;// Start in pause mode, def. = true
+    private boolean PAUSE_REQUESTED = true;// Start in pause mode, def. = true
     private boolean GAME_OVER = false;
     
     private int score = 0;
@@ -88,6 +88,7 @@ public class GamePanel {
                 background.draw(g, true);
                 obstaclePlane.draw(g, true);
                 character.draw(g);
+                pauseMenu.draw(g);
             }
             
         } finally {
