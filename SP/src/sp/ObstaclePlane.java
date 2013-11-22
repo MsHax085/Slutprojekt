@@ -21,6 +21,7 @@ public class ObstaclePlane {
 
     private BufferedImage planeImage;
     private BufferedImage obstacleImage;
+    private BufferedImage planeImage_grayscale;
     private final int y = 290;
     private final int WIDTH = 1000;// def.width = 600
     private final float SPEED = 5.25f;
@@ -39,6 +40,12 @@ public class ObstaclePlane {
             
             planeImage = ImageIO.read(planeImageFile);
             obstacleImage = ImageIO.read(obstacleImageFile);
+            
+            // Grayscale
+            planeImage_grayscale = new BufferedImage(planeImage.getWidth(), planeImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+            final Graphics g = planeImage_grayscale.getGraphics();
+            g.drawImage(planeImage, 0, 0, null);
+            g.dispose();
             
         } catch (IOException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
@@ -109,7 +116,7 @@ public class ObstaclePlane {
         }
     }
     
-    protected void draw(final Graphics g) {
+    protected void draw(final Graphics g, final boolean grayscale) {
         
         final int crateSize = planeImage.getWidth();// Height == Width
         
@@ -119,34 +126,48 @@ public class ObstaclePlane {
             final int obstacleY = obstacle.getY_int();
             
             if (obstacleY == y) {
-                g.drawImage(planeImage, obstacleX, obstacleY, crateSize, crateSize, null);
+                if (grayscale) {
+                    g.drawImage(planeImage_grayscale, obstacleX, obstacleY, crateSize, crateSize, null);
+                } else {
+                    g.drawImage(planeImage, obstacleX, obstacleY, crateSize, crateSize, null);
+                }
             } else {
                 g.drawImage(obstacleImage, obstacleX, obstacleY, crateSize, crateSize, null);
             }
         }
     }
     
-    protected boolean isCollidingObstacle(final int playerX1, final int playerY1, final int width, final int height) {
+    protected boolean isCollidingObstacle(final int x1, final int y1, final int width, final int height) {
         
-        final int playerX2 = playerX1 + width;
-        final int playerY2 = playerY1 + height;
+        // "Hit - Box"
+        // x + 15,          y - 12
+        // x + width - 15,  y - 12
+        // x + 15,          y - 2 - HEIGHT + 15
+        // x + width - 15,  y - 2 - HEIGHT + 15
+        
+        final int playerX1 = x1 + 15;
+        final int playerX2 = x1 + width - 15;
+        final int playerY1 = y1 - 12;
+        final int playerY2 = y1 - height + 15;
         final int obstacleSize = planeImage.getWidth();
         
         for (Obstacle obstacle : obstacles) {
             
             final int obstacleY1 = obstacle.getY_int();
             
-            if (obstacleY1 != y) {
+            if (obstacleY1 != y) {// Not horizontal plane
                 final int obstacleX1 = obstacle.getX_int();
                 final int obstacleX2 = obstacle.getX_int() + obstacleSize;
                 final int obstacleY2 = obstacle.getY_int() + obstacleSize;
                 
+                // Colliding y-axis
                 if (playerY1 >= obstacleY1 && playerY1 <= obstacleY2 ||
                     playerY2 >= obstacleY1 && playerY2 <= obstacleY2) {
                     
+                    // Colliding x-axis
                     if (playerX1 >= obstacleX1 && playerX1 <= obstacleX2 ||
                         playerX2 >= obstacleX1 && playerX2 <= obstacleX2) {
-                        System.out.println("Colliding");
+                        return true;
                     }
                     
                 }

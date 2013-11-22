@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
  */
 public class Character {
 
-    private final GamePanel gamePanel;
     private final EventListener eventListener;
     
     private final int x = 300;
@@ -33,8 +32,7 @@ public class Character {
     private int spriteIndex = 1;
     private long lastSpriteChange = 0;
     
-    protected Character(final GamePanel gamePanel, final EventListener eventListener) {
-        this.gamePanel = gamePanel;
+    protected Character(final EventListener eventListener) {
         this.eventListener = eventListener;
         
         try {
@@ -81,10 +79,6 @@ public class Character {
             ySpeed = 0;
         }
         
-        if (gamePanel.getObstactlePlane().isCollidingObstacle(x, (int) y, WIDTH, HEIGHT)) {
-            
-        }
-        
         if (System.currentTimeMillis() - lastSpriteChange > 50) {
             spriteIndex++;
             if (spriteIndex > 3) {
@@ -95,9 +89,22 @@ public class Character {
     }
     
     protected void draw(final Graphics g) {
-        
-        g.drawImage(sprites[spriteIndex], x - (WIDTH / 2), (int) (y - HEIGHT) + 1, null);
-        //g.setColor(Color.red);
-        //g.fillOval(x, (int)y, 2,2);
+        g.drawImage(sprites[spriteIndex], x, (int) (y - HEIGHT) + 1, null);
+    }
+    
+    protected int getWidth() {
+        return WIDTH;
+    }
+    
+    protected int getHeight() {
+        return HEIGHT;
+    }
+    
+    protected int getX() {
+        return x;
+    }
+    
+    protected int getY() {
+        return (int)y;
     }
 }

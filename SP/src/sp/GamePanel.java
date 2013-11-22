@@ -22,7 +22,8 @@ public class GamePanel {
     private final GameThread gameThread;
     
     private boolean EXIT_REQUESTED = false;
-    private boolean PAUSE_REQUESTED = true;// Start in pause mode
+    private boolean PAUSE_REQUESTED = false;// Start in pause mode, def. = true
+    private boolean GAME_OVER = false;
     
     private int score = 0;
     private final int width;
@@ -35,7 +36,7 @@ public class GamePanel {
         this.entryPoint = entryPoint;
         this.background = new Background(width);
         this.gameUI = new GameUI();
-        this.character = new Character(this, eventListener);
+        this.character = new Character(eventListener);
         this.obstaclePlane = new ObstaclePlane();
         this.pauseMenu = new PauseMenu();
         
@@ -43,13 +44,27 @@ public class GamePanel {
     }
     
     protected void start() {
+        obstaclePlane.update();// Create plane
         this.gameThread.startThread();
     }
     protected void update(final double fps, final double ups) {
         //System.out.println("FPS: " + fps + ", UPS: " + ups);
-        background.update();
-        obstaclePlane.update();
-        character.update();
+        
+        if (!PAUSE_REQUESTED && !EXIT_REQUESTED) {
+            background.update();
+            obstaclePlane.update();
+            character.update();
+        }
+        
+        if (obstaclePlane.isCollidingObstacle(
+            character.getX(),
+            character.getY(),
+            character.getWidth(),
+            character.getHeight())) {
+            
+            GAME_OVER = true;
+            PAUSE_REQUESTED = true;
+        }
     }
     
     protected void draw() {
@@ -64,10 +79,16 @@ public class GamePanel {
             g.setColor(Color.BLACK);
             g.fillRect(0, 0, width, height);
             
-            // Draw to buffer
-            background.draw(g);
-            obstaclePlane.draw(g);
-            character.draw(g);
+            // Draw to buffer - grayscale
+            if (!PAUSE_REQUESTED && !EXIT_REQUESTED) {
+                background.draw(g, false);
+                obstaclePlane.draw(g, false);
+                character.draw(g);
+            } else {
+                background.draw(g, true);
+                obstaclePlane.draw(g, true);
+                character.draw(g);
+            }
             
         } finally {
             if (g != null) {
@@ -78,9 +99,5 @@ public class GamePanel {
         // Show buffer
         bf.show();
         Toolkit.getDefaultToolkit().sync();
-    }
-    
-    protected ObstaclePlane getObstactlePlane() {
-        return obstaclePlane;
     }
 }
