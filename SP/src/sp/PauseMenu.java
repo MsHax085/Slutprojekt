@@ -26,12 +26,13 @@ public class PauseMenu {
     private BufferedImage green_button;
     private BufferedImage red_button;
     private final Font font = new Font("Arial", Font.BOLD, 48);
+    private final Font buttonFont = new Font("Arial", Font.BOLD, 24);
 
-    private final int RESUME_BUTTON_X = 400;
-    private final int RESUME_BUTTON_Y = 180;
+    private final int RESUME_BUTTON_X = 397;
+    private final int RESUME_BUTTON_Y = 160;
     
-    private final int EXIT_BUTTON_X = 0;
-    private final int EXIT_BUTTON_Y = 0;
+    private final int EXIT_BUTTON_X = 397;
+    private final int EXIT_BUTTON_Y = 240;
     
     private final int BUTTON_WIDTH = 200;
     private final int BUTTON_HEIGHT = 50;
@@ -69,15 +70,26 @@ public class PauseMenu {
         
         g.setColor(Color.BLACK);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-        g.fillRect(0, 50, 1000, 100);
+        g.fillRect(0, 50, 1000, 280);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));// Reset
         
+        // Buttons
+        g.drawImage(green_button, RESUME_BUTTON_X, RESUME_BUTTON_Y, null);
+        g.drawImage(red_button, EXIT_BUTTON_X, EXIT_BUTTON_Y, null);
+        
+        // Button text
         final FontMetrics metrics = g.getFontMetrics(font);
+        final FontMetrics buttonMetrics = g.getFontMetrics(buttonFont);
         final String gameOver = "GAME OVER";
+        final String resume = "RESUME";
+        
         g.setFont(font);
         g.setColor(Color.WHITE);
-        g.drawString("GAME OVER", (1000 / 2) - (metrics.stringWidth(gameOver) / 2), 50 + (100 - (metrics.getHeight() / 2)));
+        g.drawString(gameOver, (1000 / 2) - (metrics.stringWidth(gameOver) / 2), 50 + (100 - (metrics.getHeight() / 2)));
         
-        //g.fillRect(RESUME_BUTTON_X, RESUME_BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT);
+        g.setFont(buttonFont);
+        g.setColor(Color.BLACK);
+        g.drawString(resume, RESUME_BUTTON_X + (green_button.getWidth() / 2) - (buttonMetrics.stringWidth(resume) / 2),
+                             RESUME_BUTTON_Y + (green_button.getHeight() / 2) + (buttonMetrics.getHeight() / 4));
     }
 }
