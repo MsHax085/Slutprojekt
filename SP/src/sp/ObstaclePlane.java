@@ -51,6 +51,11 @@ public class ObstaclePlane {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    protected void reset() {
+        obstacles.clear();
+        lastObstacleX = 0;
+    }
 
     protected void update() {
         

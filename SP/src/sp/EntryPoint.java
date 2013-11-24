@@ -1,5 +1,7 @@
 package sp;
 
+import java.awt.Cursor;
+import java.awt.Point;
 import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 
@@ -35,6 +37,7 @@ public class EntryPoint {
         final GamePanel gamePanel = new GamePanel(this, eventListener, 1000, 359);// def.width = 600
         
         window.addKeyListener(eventListener);
+        window.addMouseListener(eventListener);
         window.requestFocus();
         window.setVisible(true);
         window.createBufferStrategy(2);
@@ -45,8 +48,20 @@ public class EntryPoint {
         return window.getBufferStrategy();
     }
     
+    protected Point getLocation() {
+        return window.getLocation();
+    }
+    
     protected void closeWindow() {
         window.setVisible(false);
         System.exit(0);
+    }
+    
+    protected void setCursor(final boolean hand) {
+        if (hand) {
+            window.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            return;
+        }
+        window.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 }

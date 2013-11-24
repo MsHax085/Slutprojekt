@@ -2,6 +2,8 @@ package sp;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
@@ -14,6 +16,7 @@ import java.awt.image.BufferStrategy;
 public class GamePanel {
 
     private final EntryPoint entryPoint;
+    private final EventListener eventListener;
     private final Background background;
     private final GameUI gameUI;
     private final Character character;
@@ -21,19 +24,17 @@ public class GamePanel {
     private final PauseMenu pauseMenu;
     private final GameThread gameThread;
     
-    private boolean EXIT_REQUESTED = false;
-    private boolean PAUSE_REQUESTED = true;// Start in pause mode, def. = true
-    private boolean GAME_OVER = false;
-    
-    private int score = 0;
     private final int width;
     private final int height;
+    private String STATUS = "SP";
+    private int score = 0;
     
     protected GamePanel(final EntryPoint entryPoint, final EventListener eventListener, final int width, final int height) {
         
         this.width = width;
         this.height = height;
         this.entryPoint = entryPoint;
+        this.eventListener = eventListener;
         this.background = new Background(width);
         this.gameUI = new GameUI();
         this.character = new Character(eventListener);
@@ -47,13 +48,16 @@ public class GamePanel {
         obstaclePlane.update();// Create plane
         this.gameThread.startThread();
     }
+    
     protected void update(final double fps, final double ups) {
         //System.out.println("FPS: " + fps + ", UPS: " + ups);
         
-        if (!PAUSE_REQUESTED && !EXIT_REQUESTED) {
+        if (STATUS.equals("RUNNING")) {
             background.update();
             obstaclePlane.update();
             character.update();
+            eventListener.resetMouse();// Prevent button click on status change
+            score += ups / 100;
         }
         
         if (obstaclePlane.isCollidingObstacle(
@@ -62,8 +66,52 @@ public class GamePanel {
             character.getWidth(),
             character.getHeight())) {
             
-            GAME_OVER = true;
-            PAUSE_REQUESTED = true;
+            STATUS = "SCORE: " + score;
+        }
+        
+        if (eventListener.isEscPressed()) {
+            STATUS = "PAUSE";
+        }
+        
+        if (!STATUS.equals("RUNNING")) {
+            final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+            final Point windowLocation = entryPoint.getLocation();
+            final double mouseXInWindow = mouseLocation.getX() - windowLocation.getX();
+            final double mouseYInWindow = mouseLocation.getY() - windowLocation.getY();
+
+            final boolean exitButton = pauseMenu.isExitButton(mouseXInWindow, mouseYInWindow);
+            final boolean resumeButton = pauseMenu.isStartResumeButton(mouseXInWindow, mouseYInWindow);
+
+            if (!exitButton && !resumeButton) {
+                entryPoint.setCursor(false);
+            } else {
+
+                final int clickedX = eventListener.getClickedX();
+                final int clickedY = eventListener.getClickedY();
+
+                entryPoint.setCursor(true);
+                if (pauseMenu.isExitButton(clickedX, clickedY)) {
+                    gameThread.stopThread();
+                    entryPoint.closeWindow();
+                }
+
+                if (pauseMenu.isStartResumeButton(clickedX, clickedY)) {
+                    switch (STATUS) {
+                        case "GAME OVER":
+                        case "SP":
+                            score = 0;
+                            STATUS = "RUNNING";
+                            obstaclePlane.reset();
+                            break;
+                        case "PAUSE":
+                            STATUS = "RUNNING";
+                            break;
+                    }
+                    entryPoint.setCursor(false);
+                }
+
+                eventListener.resetMouse();
+            }
         }
     }
     
@@ -80,7 +128,7 @@ public class GamePanel {
             g.fillRect(0, 0, width, height);
             
             // Draw to buffer - grayscale
-            if (!PAUSE_REQUESTED && !EXIT_REQUESTED) {
+            if (STATUS.equals("RUNNING")) {
                 background.draw(g, false);
                 obstaclePlane.draw(g, false);
                 character.draw(g);
@@ -88,7 +136,7 @@ public class GamePanel {
                 background.draw(g, true);
                 obstaclePlane.draw(g, true);
                 character.draw(g);
-                pauseMenu.draw(g);
+                pauseMenu.draw(g, STATUS);
             }
             
         } finally {

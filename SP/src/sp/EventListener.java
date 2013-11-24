@@ -15,6 +15,7 @@ import java.awt.event.MouseListener;
 public class EventListener implements MouseListener, KeyListener {
     
     private boolean SPACE_PRESSED = false;
+    private boolean ESC_PRESSED = false;
     private int clickedX;
     private int clickedY;
     
@@ -34,6 +35,10 @@ public class EventListener implements MouseListener, KeyListener {
         if (keyCode == KeyEvent.VK_SPACE) {
             SPACE_PRESSED = true;
         }
+        
+        if (keyCode == KeyEvent.VK_ESCAPE) {
+            ESC_PRESSED = true;
+        }
     }
     
     @Override
@@ -43,6 +48,10 @@ public class EventListener implements MouseListener, KeyListener {
         
         if (keyCode == KeyEvent.VK_SPACE) {
             SPACE_PRESSED = false;
+        }
+        
+        if (keyCode == KeyEvent.VK_ESCAPE) {
+            ESC_PRESSED = false;
         }
     }
     
@@ -55,6 +64,10 @@ public class EventListener implements MouseListener, KeyListener {
     
     protected boolean isSpacePressed() {
         return SPACE_PRESSED;
+    }
+    
+    protected boolean isEscPressed() {
+        return ESC_PRESSED;
     }
     
     protected int getClickedX() {
