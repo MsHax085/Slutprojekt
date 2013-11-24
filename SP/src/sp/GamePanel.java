@@ -53,11 +53,11 @@ public class GamePanel {
         //System.out.println("FPS: " + fps + ", UPS: " + ups);
         
         if (STATUS.equals("RUNNING")) {
+            
+            score += ups / 100;
             background.update();
             obstaclePlane.update();
             character.update();
-            eventListener.resetMouse();// Prevent button click on status change
-            score += ups / 100;
         }
         
         if (obstaclePlane.isCollidingObstacle(
@@ -73,46 +73,56 @@ public class GamePanel {
             STATUS = "PAUSE";
         }
         
-        if (!STATUS.equals("RUNNING")) {
-            final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
-            final Point windowLocation = entryPoint.getLocation();
-            final double mouseXInWindow = mouseLocation.getX() - windowLocation.getX();
-            final double mouseYInWindow = mouseLocation.getY() - windowLocation.getY();
+        
+        final Point mouseLocation = MouseInfo.getPointerInfo().getLocation();
+        final Point windowLocation = entryPoint.getLocation();
+        final double mouseXInWindow = mouseLocation.getX() - windowLocation.getX();
+        final double mouseYInWindow = mouseLocation.getY() - windowLocation.getY();
 
-            final boolean exitButton = pauseMenu.isExitButton(mouseXInWindow, mouseYInWindow);
-            final boolean resumeButton = pauseMenu.isStartResumeButton(mouseXInWindow, mouseYInWindow);
+        final int clickedX = eventListener.getClickedX();
+        final int clickedY = eventListener.getClickedY();
+
+        if (STATUS.equals("RUNNING")) {
+            if (gameUI.isPauseButton(mouseXInWindow, mouseYInWindow)) {
+                entryPoint.setCursor(true);
+            } else {
+                entryPoint.setCursor(false);
+            }
+            
+            if (gameUI.isPauseButton(clickedX, clickedY)) {
+                STATUS = "PAUSE";
+            }
+        } else {
+            
+            final boolean exitButton = pauseMenu.isExitButton(mouseXInWindow, mouseYInWindow, true);
+            final boolean resumeButton = pauseMenu.isStartResumeButton(mouseXInWindow, mouseYInWindow, true);
 
             if (!exitButton && !resumeButton) {
                 entryPoint.setCursor(false);
+                
             } else {
 
-                final int clickedX = eventListener.getClickedX();
-                final int clickedY = eventListener.getClickedY();
-
                 entryPoint.setCursor(true);
-                if (pauseMenu.isExitButton(clickedX, clickedY)) {
+                if (pauseMenu.isExitButton(clickedX, clickedY, false)) {
                     gameThread.stopThread();
                     entryPoint.closeWindow();
                 }
 
-                if (pauseMenu.isStartResumeButton(clickedX, clickedY)) {
-                    switch (STATUS) {
-                        case "GAME OVER":
-                        case "SP":
-                            score = 0;
-                            STATUS = "RUNNING";
-                            obstaclePlane.reset();
-                            break;
-                        case "PAUSE":
-                            STATUS = "RUNNING";
-                            break;
+                if (pauseMenu.isStartResumeButton(clickedX, clickedY, false)) {
+                    
+                    if (STATUS.equals("SP") || STATUS.contains("SCORE")) {
+                        score = 0;
+                        STATUS = "RUNNING";
+                        obstaclePlane.reset();
+                        
+                    } else if (STATUS.equals("PAUSE")) {
+                        STATUS = "RUNNING";
                     }
                     entryPoint.setCursor(false);
                 }
-
-                eventListener.resetMouse();
             }
         }
+        eventListener.resetMouse();
     }
     
     protected void draw() {
@@ -132,10 +142,12 @@ public class GamePanel {
                 background.draw(g, false);
                 obstaclePlane.draw(g, false);
                 character.draw(g);
+                gameUI.draw(g, score);
             } else {
                 background.draw(g, true);
                 obstaclePlane.draw(g, true);
                 character.draw(g);
+                gameUI.draw(g, score);
                 pauseMenu.draw(g, STATUS);
             }
             

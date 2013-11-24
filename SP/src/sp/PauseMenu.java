@@ -57,29 +57,37 @@ public class PauseMenu {
         }
     }
     
-    protected boolean isStartResumeButton(final double x, final double y) {
+    protected boolean isStartResumeButton(final double x, final double y, final boolean hover) {
         
         if (x >= RESUME_BUTTON_X && x <= RESUME_BUTTON_X + resume_button.getWidth()) {
             if (y >= RESUME_BUTTON_Y && y <= RESUME_BUTTON_Y + resume_button.getHeight()) {
-                RESUME_BUTTON_HOVER = true;
+                if (hover) {
+                    RESUME_BUTTON_HOVER = true;
+                }
                 return true;
             }
         }
         
-        RESUME_BUTTON_HOVER = false;
+        if (hover) {
+            RESUME_BUTTON_HOVER = false;
+        }
         return false;
     }
     
-    protected boolean isExitButton(final double x, final double y) {
+    protected boolean isExitButton(final double x, final double y, final boolean hover) {
         
         if (x >= EXIT_BUTTON_X && x <= EXIT_BUTTON_X + exit_button.getWidth()) {
             if (y >= EXIT_BUTTON_Y && y <= EXIT_BUTTON_Y + exit_button.getHeight()) {
-                EXIT_BUTTON_HOVER = true;
+                if (hover) {
+                    EXIT_BUTTON_HOVER = true;
+                }
                 return true;
             }
         }
         
-        EXIT_BUTTON_HOVER = false;
+        if (hover) {
+            EXIT_BUTTON_HOVER = false;
+        }
         return false;
     }
     
@@ -116,7 +124,7 @@ public class PauseMenu {
         final String exit = "Exit";
         String resume = "RESUME";
         
-        if (STATUS.equals("GAME OVER") || STATUS.equals("SP")) {
+        if (STATUS.contains("SCORE") || STATUS.equals("SP")) {
             resume = "START";
         }
         
