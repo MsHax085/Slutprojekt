@@ -45,12 +45,12 @@ public class Character {
             
             this.sprites = new BufferedImage[rows * cols];
             
-            for (int y = 0; y < rows; y++) {
-                for (int x = 0; x < cols; x++) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
                     
-                    sprites[(y * cols) + x] = spritesImage.getSubimage(
-                            x * WIDTH,
-                            y * HEIGHT,
+                    sprites[(row * cols) + col] = spritesImage.getSubimage(
+                            col * WIDTH,
+                            row * HEIGHT,
                             WIDTH,
                             HEIGHT);
                     
@@ -67,7 +67,7 @@ public class Character {
         float yForce = 0;
         
         yForce += GRAVITY;
-        if (y == 290 && eventListener.isSpacePressed()) {// y == 290 <=> NOT jumping
+        if (y == 290 && eventListener.isSpacePressed()) {// row == 290 <=> NOT jumping
             yForce += JUMP_IMPULSE;
         }
         

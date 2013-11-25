@@ -44,9 +44,11 @@ public class ObstaclePlane {
             // Grayscale
             planeImage_grayscale = new BufferedImage(planeImage.getWidth(), planeImage.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
             final Graphics g = planeImage_grayscale.getGraphics();
-            g.drawImage(planeImage, 0, 0, null);
-            g.dispose();
-            
+            {
+                g.drawImage(planeImage, 0, 0, null);
+                g.dispose();
+            }
+                
         } catch (IOException ex) {
             Logger.getLogger(Character.class.getName()).log(Level.SEVERE, null, ex);
         }

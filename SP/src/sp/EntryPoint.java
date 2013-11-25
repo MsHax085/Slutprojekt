@@ -34,13 +34,13 @@ public class EntryPoint {
         window.setLocationRelativeTo(null);
         
         eventListener = new EventListener();
-        final GamePanel gamePanel = new GamePanel(this, eventListener, 1000, 359);// def.width = 600
-        
         window.addKeyListener(eventListener);
         window.addMouseListener(eventListener);
         window.requestFocus();
         window.setVisible(true);
         window.createBufferStrategy(2);
+        
+        final GamePanel gamePanel = new GamePanel(this, eventListener, 1000, 359);// def.width = 600
         gamePanel.start();
     }
     
